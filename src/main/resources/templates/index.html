@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #352203, #242e40,#01283d);
+        }
+        .container {
+            width: 850px;
+            height: 500px;
+            display: flex;
+            position: relative;
+            border: 2px solid #ccc;
+            border-radius: 15px;
+            box-shadow: 20px 20px 15px rgba(0, 0, 0, 0.653);
+            overflow: hidden;
+            transition: transform 0.8s ease-in-out;
+            background: white;
+        }
+        .container:hover{
+            transition: transform 0.5s ease-in-out;
+            transform: scale(1.08);
+        }
+        .image-container {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            left: 0;
+            transition: all 0.8s ease-in-out;
+        }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px 0 0 15px;
+        }
+        .form-container {
+            width: 50%;
+            height: 100%;
+            padding: 40px;
+            text-align: center;
+            position: absolute;
+            right: 0;
+            transition: all 0.8s ease-in-out;
+            background: white;
+            border-radius: 0 15px 15px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .subcontent {
+            display: flex;
+            align-items: center;
+            margin-top: 50px;
+            width: 100%;
+        }
+        label {
+            width: 80px;
+            text-align: right;
+            margin-right: 10px;
+        }
+        .input-container {
+            position: relative;
+            flex-grow: 1;
+            margin-top: 0px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            padding-left: 35px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .input-container i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+        #submit {
+            margin-top: 20px;
+            margin-left: 30px;
+            padding: 10px 100px;
+            border: none;
+            background-color: rgb(9, 51, 60);
+            color: white;
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        #submit:hover {
+            transform: scale(1.1);
+            background-color: rgb(13, 38, 56);
+        }
+        .switch-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px; /* Moves it slightly down */
+        }
+        .switch-container p {
+            margin: 0 5px;
+            font-size: 16px;
+        }
+
+        .switch-btn {
+            margin-top:0px;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        /* Animation effect */
+        .container.shift .image-container {
+            left: 50%;
+        }
+        .container.shift .form-container {
+            right: 50%;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="image-container" id="image-container">
+            <img src="thunderstorm-city.jpg" id="image" alt="Login Image">
+        </div>
+        <div class="form-container">
+            <div id="login-form">
+                <h1>Login</h1>
+                <div class="subcontent">
+                    <label for="email">Email:</label>
+                    <div class="input-container">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Enter your email" class="input-field" autocomplete="off" required>
+                    </div>
+                </div>
+                <div class="subcontent">
+                    <label for="password">Password:</label>
+                    <div class="input-container">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" class="input-field" autocomplete="off" required>
+                    </div>
+                </div>
+                <div class="switch-container">
+                <p>Don't have an account?</p>
+                <p class="switch-btn" onclick="switchForm()">Sign up</p>
+                </div>
+                <input type="submit" value="Login" id="submit">
+            </div>
+            <form action="/registeruser" method="post" target="signup.html">
+            <div id="signup-form" class="hidden">
+                <h1>Sign Up</h1>
+                <div class="subcontent">
+                    <label for="username">Username:</label>
+                    <div class="input-container">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="userName" placeholder="Enter your username" class="input-field" required>
+                    </div>
+                </div>
+                <div class="subcontent">
+                    <label for="email">Email:</label>
+                    <div class="input-container">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email-signup" name="email" placeholder="Enter your email" class="input-field" required>
+                    </div>
+                </div>
+                <div class="subcontent">
+                    <label for="password">Password:</label>
+                    <div class="input-container">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password-signup" name="password" placeholder="Enter your password" class="input-field" required>
+                    </div>
+                </div>
+                <div class="switch-container">
+                <p>Already have an account?</p> 
+                <p class="switch-btn" onclick="switchForm()">Login</p>
+                </div>
+                <input type="submit" value="Sign Up" id="submit">
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function switchForm() {
+            let container = document.getElementById("container");
+            let loginForm = document.getElementById("login-form");
+            let signupForm = document.getElementById("signup-form");
+            let image = document.getElementById("image");
+
+            container.classList.toggle("shift");
+
+            if (loginForm.classList.contains("hidden")) {
+                loginForm.classList.remove("hidden");
+                signupForm.classList.add("hidden");
+                image.src = "thunderstorm-city.jpg";
+            } else {
+                loginForm.classList.add("hidden");
+                signupForm.classList.remove("hidden");
+                image.src = "dark-style-sky-nighttime.jpg";
+            }
+        }
+    </script>
+</body>
+</html>

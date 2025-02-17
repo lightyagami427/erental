@@ -1,0 +1,110 @@
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center; /* Center content */
+    align-items: center;
+    height: 90vh; /* Full screen height */
+    margin: 0;
+    background-color: #f4f4f4;
+}
+.container {
+    width: 850px;
+    height:500px;
+    padding: 20px 50px;
+    display: flex;
+    margin: auto;
+    text-align: center;
+    border:2px solid #ccc;
+    border-radius: 15px;
+    padding:0px;
+    box-shadow:15px 15px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    
+}
+.image-container {
+    width: 50%; /* Half width for image */
+    display: flex;
+    justify-content: flex-start; /* Align image to left */
+    align-items: center;
+}
+.image-container img {
+    width: 110%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px; /* Optional rounded corners */
+}
+
+.form-container {
+    width: 50%; /* Keep form width */
+    padding: 20px;
+    text-align: left;
+    margin-left: 30px; /* Moves only the form to the right */
+}
+.subcontent {
+    display: flex;
+    align-items: center;
+    margin-top: 50px;
+    margin-bottom: 0px;
+    width:100%;
+}
+.subcontent:first-of-type{
+    margin-bottom: -40px;
+}
+label {
+    width:80px; /* Adjust width as needed */
+    font-size: 16px;
+    text-align: right;
+    margin-right: 10px;
+}
+.input-container {
+    position: relative;
+    flex-grow: 1;
+}
+.input-field {
+    width: 100%;
+    min-width: 250px;
+    padding: 10px;
+    padding-left: 35px; /* Space for icon */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+.input-container i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    font-size: 16px;
+}
+#submit {
+    margin-top: 10px;
+    margin-left: 90px;
+    display: block;
+    padding: 10px 70px;
+    border: none;
+    background-color: rgb(9, 51, 60);
+    color: white;
+    font-size: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+p{
+    margin-left: 80px;
+    margin-top: -5px;
+}
+#submit:hover {
+    background-color: rgb(13, 38, 56);
+    transform: scale(1.1);
+}
+.container.active .image-container {
+    transform: translateX(-100%);
+}
+
+.container.active .form-container {
+    transform: translateX(-100%);
+}
+
