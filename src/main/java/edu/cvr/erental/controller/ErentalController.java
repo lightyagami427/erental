@@ -31,5 +31,10 @@ public class ErentalController {
         usersRegistry.save(user);
         return "signup";
     }
+    @GetMapping("/home")
+    public String getHome()
+    {
+        return "home";
+    }
     
 }
