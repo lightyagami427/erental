@@ -1,6 +1,7 @@
 package edu.cvr.erental.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import edu.cvr.erental.model.ErentalUsers;
@@ -21,15 +22,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ErentalController {
     @Autowired
     private ErentalUsersRegistry usersRegistry;
-    @GetMapping("/")
+    @GetMapping("/login")
     public String getMethodName() {
-        return "index";
+        //SecurityContextHolder.getContext().getAuthentication().getCredentials().
+        return "login";
     }
     @PostMapping("/registeruser")
     public String postMethodName(@ModelAttribute ErentalUsers user) {
         log.info("username={},email={}",user.getUserName(),user.getEmail());
         usersRegistry.save(user);
-        return "signup";
+        return "success";
     }
     @GetMapping("/home")
     public String getHome()

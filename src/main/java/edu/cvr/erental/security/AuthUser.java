@@ -1,6 +1,7 @@
 package edu.cvr.erental.security;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +19,8 @@ public class AuthUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+        //throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+        return Collections.emptyList();
     }
 
     @Override

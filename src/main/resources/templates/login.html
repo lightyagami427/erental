@@ -146,20 +146,24 @@
             <img src="thunderstorm-city.jpg" id="image" alt="Login Image">
         </div>
         <div class="form-container">
+            <form name="f" th:action="@{/login}" method="post"> 
             <div id="login-form">
                 <h1>Login</h1>
+                <div th:if="${param.error}" style="color: red; font-size: 14px;">
+                    Invalid username or password!
+                </div>
                 <div class="subcontent">
-                    <label for="email">Email:</label>
+                    <label for="username">Email:</label>
                     <div class="input-container">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" id="email" placeholder="Enter your email" class="input-field" autocomplete="off" required>
+                        <input type="username" id="username" name="username" placeholder="Enter your username" class="input-field" autocomplete="off" required>
                     </div>
                 </div>
                 <div class="subcontent">
                     <label for="password">Password:</label>
                     <div class="input-container">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="password" placeholder="Enter your password" class="input-field" autocomplete="off" required>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" class="input-field" autocomplete="off" required>
                     </div>
                 </div>
                 <div class="switch-container">
@@ -167,8 +171,9 @@
                 <p class="switch-btn" onclick="switchForm()">Sign up</p>
                 </div>
                 <input type="submit" value="Login" id="submit">
+            </form>
             </div>
-            <form action="/registeruser" method="post" target="signup.html">
+            <form name="f" th:action="@{/registeruser}" method="post">
             <div id="signup-form" class="hidden">
                 <h1>Sign Up</h1>
                 <div class="subcontent">
