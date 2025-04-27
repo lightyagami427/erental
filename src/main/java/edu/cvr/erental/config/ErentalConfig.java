@@ -131,7 +131,7 @@ public class ErentalConfig implements ApplicationContextAware, WebMvcConfigurer 
             http
                 .csrf(Customizer.withDefaults())
                     .authorizeHttpRequests((requests)-> requests
-                    .requestMatchers("/resources/**","/login","/registeruser").permitAll()
+                    .requestMatchers("/resources/**","/login","/registeruser","/saveproperty","/roles").permitAll()
                     .anyRequest().authenticated()
                     )
                     .formLogin(form->form
@@ -141,14 +141,14 @@ public class ErentalConfig implements ApplicationContextAware, WebMvcConfigurer 
                     //.failureUrl("/loginforehr.html?error=true")
                     //.failureHandler(new AppAuthFailureHandler())
                     .permitAll()
-                    )
+                    );
                     // .logout(logout->logout
                     // .logoutUrl("/perform_logout")
                     // .deleteCookies("JSESSIONID")
                     // )
-                    .sessionManagement((session) -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    );
+                    //.sessionManagement((session) -> session
+                    //.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    //);
 
 
 

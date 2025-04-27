@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Post Rental Form</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb, #fbc2eb, #fcd1d1);
+      background-size: cover;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 650px;
+      background: #ffffffee;
+      padding: 35px;
+      border-radius: 18px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.15);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-top: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+      transition: all 0.2s ease;
+      cursor: text;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #0077b6;
+      font-size: 18px;
+    }
+
+    .form-group input:hover,
+    .form-group textarea:hover {
+      background-color: #f0f8ff;
+    }
+
+    .form-group input[type="file"] {
+      padding: 5px;
+      background: none;
+      border: none;
+    }
+
+    .submit-btn {
+      margin-top: 30px;
+      width: 100%;
+      padding: 16px;
+      font-size: 17px;
+      background: #f3722c;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: #f94144;
+    }
+
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00c853;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-size: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: fadeInOut 3s ease forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; bottom: 0; }
+      10% { opacity: 1; bottom: 20px; }
+      90% { opacity: 1; bottom: 20px; }
+      100% { opacity: 0; bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Post Your Rental</h2>
+    <!-- <form name="rentalForm" th:action="@{/saveproperty}" method="post" enctype="multipart/form-data"> -->
+
+      <div class="form-group">
+        <label>Rental Title</label>
+        <input type="text" name="rentalTitle" required />
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Monthly Price</label>
+        <input type="number" name="monthlyPrice" required min="0" />
+      </div>
+
+      <div class="form-group">
+        <label>H.No</label>
+        <input type="text" name="hNo" required />
+      </div>
+
+      <div class="form-group">
+        <label>street</label>
+        <input type="text" name="street" required />
+      </div>
+
+      <div class="form-group">
+        <label>area</label>
+        <input type="text" name="area" required />
+      </div>
+
+      <div class="form-group">
+        <label>landmark</label>
+        <input type="text" name="landMark"  />
+      </div>
+
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" name="city" required />
+      </div>
+
+      <div class="form-group">
+        <label>State</label>
+        <input type="text" name="state" required />
+      </div>
+
+      <div class="form-group">
+        <label>pincode</label>
+        <input type="text" name="pincode" required />
+      </div>
+
+      <div class="form-group">
+        <label>Image Name</label>
+        <input type="text" name="imgName" required />
+      </div>
+
+      <div class="form-group">
+        <label>Upload Image</label>
+        <input type="file" name="img" accept="image/*" />
+      </div>
+
+      <button type="submit" class="submit-btn">Submit Rental</button>
+    <!-- </form> -->
+  </div>
+
+  <div class="toast" id="toast">Your rental has been posted!</div>
+
+  <script>
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    document.getElementById('rentalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+
+      console.log("Form Submitted:", data);
+      showToast("Your rental has been posted!");
+      this.reset();
+    });
+  </script>
+
+</body>
+</html>

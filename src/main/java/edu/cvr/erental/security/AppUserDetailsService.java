@@ -9,11 +9,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import edu.cvr.erental.model.ErentalUsers;
 import edu.cvr.erental.model.ErentalUsersRepository;
+import edu.cvr.erental.model.UserRoleRegistry;
 
 public class AppUserDetailsService implements UserDetailsService{
 
     @Autowired
     private ErentalUsersRepository repo;
+    @Autowired
+    private UserRoleRegistry userRoleRegistry;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // TODO Auto-generated method stub
@@ -24,7 +27,7 @@ public class AppUserDetailsService implements UserDetailsService{
             System.out.println("User not found");
             throw new UsernameNotFoundException("User not found");
         }
-        return  new AuthUser(erusers.get());
+        return  new AuthUser(erusers.get(),userRoleRegistry);
     }
     
 }

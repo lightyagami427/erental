@@ -1,6 +1,7 @@
 package edu.cvr.erental.model;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,12 +22,16 @@ public class ErentalUsersRegistry {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void save(ErentalUsers user) {
+    public ErentalUsers save(ErentalUsers user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
     public Optional<ErentalUsers> findByUserName(final String userName)
     {
         return userRepository.findByUserName(userName);
+    }
+    public Optional<ErentalUsers> findById(UUID id)
+    {
+        return userRepository.findById(id);
     }
 }
