@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Select Your Role</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #352203, #242e40,#01283d);
+        }
+        .role-container {
+            width: 500px;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 20px 20px 15px rgba(0, 0, 0, 0.653);
+        }
+        .role-option {
+            margin: 30px;
+            padding: 30px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .role-option:hover {
+            border-color: #4CAF50;
+            transform: scale(1.05);
+        }
+        .role-option i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+    <div class="role-container">
+        <h1>Are you a Property Owner or Tenant?</h1>
+        
+        <div class="role-option" onclick="selectRole('owner')">
+            <i class="fas fa-home"></i>
+            <h2>Property Owner</h2>
+            <p>Manage your properties and tenants</p>
+        </div>
+        
+        <div class="role-option" onclick="selectRole('tenant')">
+            <i class="fas fa-user"></i>
+            <h2>Tenant</h2>
+            <p>Access your rental information</p>
+        </div>
+    </div>
+
+    <!-- <script>
+        function selectRole(role) {
+            // Store role in localStorage or sessionStorage
+            sessionStorage.setItem('userRole', role);
+            
+            // Redirect to login page
+            window.location.href = 'login.html'; // Your existing login page
+        }
+    </script> -->
+</body>
+</html>

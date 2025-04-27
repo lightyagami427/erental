@@ -6,15 +6,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 // import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+ import org.springframework.security.authentication.AuthenticationManager;
+ import org.springframework.security.authentication.AuthenticationProvider;
+ import org.springframework.security.authentication.ProviderManager;
+ import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,9 +37,9 @@ import edu.cvr.erental.security.AppAuthSucessHandler;
 import edu.cvr.erental.security.AppUserDetailsService;
 
 @Configuration
-// @EnableWebSecurity
+@EnableWebSecurity
 @EnableWebMvc
-// @EnableJpaRepositories(basePackages = { "edu.cvr.erental.model" })
+@EnableJpaRepositories(basePackages = { "edu.cvr.erental.model" })
 @EntityScan(basePackages = { "edu.cvr.erental.model" })
 public class ErentalConfig implements ApplicationContextAware, WebMvcConfigurer {
 
@@ -102,15 +104,57 @@ public class ErentalConfig implements ApplicationContextAware, WebMvcConfigurer 
     //     return new InMemoryUserDetailsManager(user1, user2, admin);
     // }
 
-    // @Bean
-    // public PasswordEncoder passwordEncoder() {
-    //     return new BCryptPasswordEncoder();
-    // }
+     @Bean
+     public PasswordEncoder passwordEncoder() {
+         return new BCryptPasswordEncoder();
+     }
 
      @Bean
      public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-         http.csrf(Customizer.withDefaults())
-                 .formLogin(form ->form.loginPage("/").successHandler(new AppAuthSucessHandler()));
+         /*http.csrf(Customizer.withDefaults())
+                .authorizeHttpRequests((requests) -> requests
+				//.requestMatchers("/login").permitAll()
+                .requestMatchers("/resources/**","/login").permitAll()
+				.anyRequest().authenticated()
+			)*/   
+                //.formLogin(form ->form.loginPage("/login").successHandler(new AppAuthSucessHandler()));
+            /*http
+                .authorizeRequests()
+                    .requestMatchers("/resources/**","/login").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                        .formLogin(form->form
+                            .login("/login")
+                            .successHandler(new AppAuthSucessHandler())
+                            .permitAll());
+                            .and()*/
+            http
+                .csrf(Customizer.withDefaults())
+                    .authorizeHttpRequests((requests)-> requests
+                    .requestMatchers("/resources/**","/login","/registeruser","/saveproperty","/roles").permitAll()
+                    .anyRequest().authenticated()
+                    )
+                    .formLogin(form->form
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .successHandler(new AppAuthSucessHandler())
+                    //.failureUrl("/loginforehr.html?error=true")
+                    //.failureHandler(new AppAuthFailureHandler())
+                    .permitAll()
+                    );
+                    // .logout(logout->logout
+                    // .logoutUrl("/perform_logout")
+                    // .deleteCookies("JSESSIONID")
+                    // )
+                    //.sessionManagement((session) -> session
+                    //.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    //);
+
+
+
+                    
+
+
           //.loginPage("/loginforehr.html")
           //.loginProcessingUrl("/perform_login")
           //.defaultSuccessUrl("/signup.html", true)
@@ -130,15 +174,16 @@ public class ErentalConfig implements ApplicationContextAware, WebMvcConfigurer 
 	}
      @SuppressWarnings("deprecation")
     @Bean
-    public AuthenticationProvider authenticationProvider(AppUserDetailsService appservice)
+    public AuthenticationProvider authenticationProvider(UserDetailsService appservice)
     {
         DaoAuthenticationProvider provider=new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        provider.setPasswordEncoder(passwordEncoder());
+        //provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
         provider.setUserDetailsService(appservice);
         return provider;
     }
     @Bean
-    public AppUserDetailsService appUserDetailsService()
+    public UserDetailsService appUserDetailsService()
     {
         return new AppUserDetailsService();
     }

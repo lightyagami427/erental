@@ -1,11 +1,783 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Rental Home</title>
+    <style>
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #FFC107;
+            --text-color: #333;
+            --background-color: #f5f5f5;
+        }
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            position: relative;
+        }
+    
+        header {
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+    
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    
+        .logo {
+            width: 40px;
+            height: 40px;
+        }
+    
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 1000px;
+            padding:1em;
+        }
+    
+        #searchInput {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding-left: 25em;
+        }
+    
+        #searchBtn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+        }
+    
+        .post-btn, .logout-btn, .profile-btn, .apply-filters-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+    
+        .profile-btn {
+            background-color: var(--secondary-color);
+        }
+    
+        .logout-btn {
+            background-color: #dc3545;
+        }
+    
+        .apply-filters-btn {
+            width: 100%;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+    
+        .post-btn:hover, .logout-btn:hover, .profile-btn:hover, .apply-filters-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+    
+        .main-container {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem;
+            position: relative;
+        }
+    
+        .filters-sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+    
+        .filters-sidebar h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+    
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+    
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+    
+        select, input[type="range"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+    
+        select:focus, input[type="range"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+    
+        .listings-container {
+            position: absolute;
+            left: 300px;
+            top: 120px;
+            right: 0;
+            padding: 1rem;
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+        }
+    
+        .listings {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+    
+        .listing-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+    
+        .listing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+    
+        .listing-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+    
+        .listing-card:hover .listing-image {
+            transform: scale(1.03);
+        }
+    
+        .listing-details {
+            padding: 1.5rem;
+        }
+    
+        .listing-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+    
+        .listing-price {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+    
+        .per-month {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    
+        .listing-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+    
+        .listing-info span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    
+        .favorite-btn {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.2s;
+        }
+    
+        .favorite-btn:hover {
+            transform: scale(1.2);
+        }
+    
+        .book-btn {
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+    
+        .book-btn:hover {
+            background-color: #1976D2;
+        }
+    
+        .book-btn.booked {
+            background-color: #4CAF50;
+            cursor: not-allowed;
+        }
+    
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+    
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+    
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+    
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    
+        .profile-info h2 {
+            margin-bottom: 0.5rem;
+        }
+    
+        .profile-info p {
+            color: #666;
+        }
+    
+        .profile-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+    
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: color 0.2s;
+            position: relative;
+        }
+    
+        .tab-btn.active {
+            color: var(--primary-color);
+        }
+    
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+    
+        .tab-content {
+            display: block;
+        }
+    
+        .tab-content.hidden {
+            display: none;
+        }
+    
+        .settings-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+    
+        .save-settings-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: background-color 0.2s;
+        }
+    
+        .save-settings-btn:hover {
+            background-color: #1976D2;
+        }
+    
+        .close, .close-profile {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.2s;
+        }
+    
+        .close:hover, .close-profile:hover {
+            transform: scale(1.1);
+        }
+    
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+    
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+    
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+    
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+    
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+    
+        button[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: background-color 0.2s;
+        }
+    
+        button[type="submit"]:hover {
+            background-color: #1976D2;
+        }
+    
+        .profile-section {
+            margin-top: 1rem;
+        }
+    
+        .bookings-list {
+            margin-top: 1rem;
+        }
+    
+        .booking-item {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+    
+        .booking-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+    
+        .booking-item p {
+            margin: 0.3rem 0;
+          color: #666;
+        }
+        .listings-container {
+        position: absolute;
+        left: 300px;
+        top: 120px;
+        right: 0;
+        padding: 1rem;
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+    }
+
+    .listings {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .listing-card {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .listing-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .listing-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .listing-card:hover .listing-image {
+        transform: scale(1.03);
+    }
+
+    .listing-details {
+        padding: 1.5rem;
+    }
+
+    .listing-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+
+    .listing-price {
+        color: var(--text-color);
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .per-month {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .listing-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+        margin: 1rem 0;
+    }
+
+    .listing-info span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .book-btn {
+        width: 100%;
+        padding: 0.8rem;
+        margin-top: 1rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .book-btn:hover {
+        background-color: #1976D2;
+    }
+
+    /* Hide the original table */
+    table.property-table {
+        display: none;
+    }
+    </style>
 </head>
 <body>
-    <h1>Home</h1>
+    <header>
+        <div class="header-left">
+          <img src="https://cdn-icons-png.flaticon.com/512/1040/1040993.png" alt="Logo" class="logo">
+          <h1>House Rentals</h1>
+        </div>
+        <div class="header-right">
+          <div class="search-container">
+            <form name="searchForm" th:action="@{/searchproperty}" method="post" id="searchFormID">
+                <!-- <input name="bhk" type="hidden" id="bhkID" />
+                <input name="type" type="hidden" id="typeID" /> -->
+                <input name="price" type="hidden"  id="priceID" th:value="${priceValue}"/>
+                <input type="text" id="searchInput" placeholder="Search properties..." style="width: 1000px;" name="search" th:value="${searchValue}">
+                <button id="searchBtn">🔍</button>
+            </form>
+          </div>
+          <button id="profileBtn" class="profile-btn">👤 Profile</button>
+          <a th:href="@{/listing}"><button class="post-btn">Post a Rental</button></a>
+          <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+          </form>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="filters-sidebar">
+          <h2>Filters</h2>
+          <!-- <div class="filter-group">
+            <label>Bedrooms:</label>
+            <select name="bhk" id="bhkFilterID">
+              <option value="">All</option>
+              <option value="1">1 BHK</option>
+              <option value="2">2 BHK</option>
+              <option value="3">3 BHK</option>
+              <option value="4">4+ BHK</option>
+            </select>
+          </div>
+    
+          <div class="filter-group">
+            <label>Gender Preference:</label>
+            <select id="genderFilter">
+              <option value="">All</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="any">Any</option>
+            </select>
+          </div>
+    
+          <div class="filter-group">
+            <label>House Type:</label>
+            <select name="type" id="typeFilterID">
+              <option value="">All</option>
+              <option value="apartment">Apartment</option>
+              <option value="independent">Independent House</option>
+            </select>
+          </div> -->
+    
+          <div class="filter-group">
+            <label>Price Range:</label>
+            <input type="range" id="priceRangeFilterID" min="0" max="50000" step="1000" name="price">
+            <span id="priceValue" th:text="${priceValue}">₹0</span>
+          </div>
+    
+          <!-- <div class="filter-group">
+            <label>Minimum Rating:</label>
+            <select id="ratingFilter">
+              <option value="">All</option>
+              <option value="4">4+ ★</option>
+              <option value="3">3+ ★</option>
+              <option value="2">2+ ★</option>
+            </select>
+          </div>     -->
+          <button id="applyFilters" class="apply-filters-btn" onclick="Filterfunction()">Apply Filters</button>
+        </div>
+    </div>
+
+            
+                
+        <div class="listings-container">
+                <form name="submit" th:action="@{/booking}" method="post" id="bookingFormId">
+                    <input type="hidden" name="bookedProperty" id="bookedPropertyId"/>
+                    <div id="listings" class="listings">
+                        <!-- Dynamic listings will be inserted here -->
+                            <div th:each="property_listing : ${property_listings}" class="listing-card">
+                                <img th:src="@{'data:image/jpeg;base64,'+${property_listing.imgBase64}}" alt="Property Image" class="listing-image">
+                                <div class="listing-details">
+                                    <h3 class="listing-title" th:text="${property_listing.rentalTitle}">Rental Title</h3>
+                                    <p class="listing-price">
+                                        ₹<span th:text="${property_listing.monthlyPrice}">Monthly Price</span>
+                                        <span class="per-month">/month</span>
+                                    </p>
+                                    <div class="listing-info">
+                                        <span><i class="fas fa-map-marker-alt"></i> <span th:text="${property_listing.area}">Area</span></span>
+                                        <span><i class="fas fa-city"></i> <span th:text="${property_listing.city}">City</span></span>
+                                        <span><i class="fas fa-home"></i> <span th:text="${property_listing.hNo + ', ' + property_listing.street}">Address</span></span>
+                                        <span><i class="fas fa-map-pin"></i> <span th:text="${property_listing.pincode}">Pincode</span></span>
+                                    </div>
+                                    <button class="book-btn"  th:onclick="changeLabel([[${property_listing.id}]])">Book Now</button>
+                                </div>
+                            </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+      
+      <table class="property-table">
+        <thead>
+            <tr>
+                <th>Rental Title</th>
+                <th>Description</th>
+                <th>Monthly Price</th>
+                <th>H.No</th>
+                <th>Street</th>
+                <th>Area</th>
+                <th>Landmark</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Pincode</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="property_listing : ${property_listings}">
+                <td><span th:text="${property_listing.rentalTitle}"> Rental Title </span></td>
+                <td><span th:text="${property_listing.description}"> Description </span></td>
+                <td><span th:text="${property_listing.monthlyPrice}"> Monthly Price </span></td>
+                <td><span th:text="${property_listing.hNo}"> H.No </span></td>
+                <td><span th:text="${property_listing.street}"> street </span></td>
+                <td><span th:text="${property_listing.area}"> area </span></td>
+                <td><span th:text="${property_listing.landMark}"> landMark </span></td>
+                <td><span th:text="${property_listing.city}"> city </span></td>
+                <td><span th:text="${property_listing.state}"> state </span></td>
+                <td><span th:text="${property_listing.pincode}"> pincode </span></td>
+                <td><img th:src="@{'data:image/jpeg;base64,'+${property_listing.imgBase64}}"/></td>
+            </tr>
+        </tbody>
+    </table>
+
+      <!-- Profile Modal -->
+      <div id="profileModal" class="modal">
+        <div class="modal-content">
+          <span class="close-profile">&times;</span>
+          <div class="profile-header">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile Picture" class="profile-picture" id="currentProfilePic">
+            <div class="profile-info">
+              <h2 id="userName">John Doe</h2>
+              <p id="userEmail">john.doe@example.com</p>
+              <p id="userPhone">+91 9876543210</p>
+            </div>
+          </div>
+          <div class="profile-tabs">
+            <button class="tab-btn active" data-tab="bookings">My Bookings</button>
+            <button class="tab-btn" data-tab="profilepic">Profile Picture</button>
+          </div>
+          <div class="tab-content" id="bookingsTab">
+            <div id="userBookings" class="bookings-list">
+              <!-- Bookings will be populated here -->
+            </div>
+          </div>
+          <div class="tab-content hidden" id="profilepicTab">
+            <form id="profilePicForm" class="settings-form">
+              <div class="form-group">
+                <label>Upload Profile Picture:</label>
+                <input type="file" accept="image/*" id="uploadPicInput">
+              </div>
+              <button type="submit" class="save-settings-btn">Upload</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <script>
+        // JS for updating price label
+        const priceRange = document.getElementById("priceRangeFilterID");
+        const priceValue = document.getElementById("priceValue");
+        priceRange.addEventListener("input", () => {
+          priceValue.textContent = `₹${priceRange.value}`;
+        });
+    
+        // Profile modal tabs switching
+        document.querySelectorAll(".tab-btn").forEach(button => {
+          button.addEventListener("click", () => {
+            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+    
+            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.add("hidden"));
+            const activeTab = document.getElementById(button.dataset.tab + "Tab");
+            if (activeTab) activeTab.classList.remove("hidden");
+          });
+        });
+    
+        // Profile picture upload preview (optional)
+        document.getElementById("uploadPicInput")?.addEventListener("change", function () {
+          const file = this.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              document.getElementById("currentProfilePic").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        //search form
+        function Filterfunction(){
+        // const bhkValue=document.getElementById("bhkFilterID").value;
+        // const typeValue=document.getElementById("typeFilterID").value;
+        const priceRangeValue=document.getElementById("priceRangeFilterID").value;
+        // document.getElementById("bhkID").value=bhkValue;
+        // document.getElementById("typeID").value=typeValue;
+        document.getElementById("priceID").value=priceRangeValue;
+        document.getElementById("searchFormID").submit();
+        }
+
+        function changeLabel(id)
+        {
+            //const id=button.getAttribute('data-property-id');
+            document.getElementById("bookedPropertyId").value=id;
+            document.getElementById("bookingFormId").submit();
+            event.target.textContent="Booking";
+            event.target.disabled=true;
+        }
+      </script>
 </body>
 </html>
